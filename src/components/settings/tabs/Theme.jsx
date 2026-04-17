@@ -1,168 +1,170 @@
 import { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n/i18n";
+import { setTheme as setUiTheme, setFont, setFontSize, setZoom } from "../../../redux/uiSlice";
+import { setTheme as setBoolTheme } from "../../../redux/slices/themeSlice";
+
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिंदी" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "zh", label: "中文" },
+  { code: "ja", label: "日本語" },
+];
 
 const Theme = () => {
-  const [theme, setTheme] = useState("Light");
-  const [language, setLanguage] = useState("English");
-  const [font, setFont] = useState("Arial");
-  const [fontSize, setFontSize] = useState("Medium");
-  const [zoom, setZoom] = useState(100);
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // Default values
+  const { theme = "light", font = "Arial", fontSize = "medium", zoom = 100 } =
+    useSelector((s) => s.ui || {});
+
+  const [language, setLanguage] = useState(
+    (localStorage.getItem("app_language") || i18n.language || "en").substring(0, 2)
+  );
+
   const [isSyncingCalendar, setIsSyncingCalendar] = useState(false);
   const [isSyncingContact, setIsSyncingContact] = useState(false);
 
-  
-
-  // Apply theme to document
+  // Language sync
   useEffect(() => {
-    if (theme === "Dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
+    const handleLangChange = (e) => {
+      setLanguage(e.detail.language.substring(0, 2));
+    };
+    window.addEventListener("languageChange", handleLangChange);
+    return () => window.removeEventListener("languageChange", handleLangChange);
+  }, []);
 
-  // Apply font to document
+  // Font apply
   useEffect(() => {
-    document.documentElement.style.fontFamily = font;
+    document.body.style.fontFamily = font;
   }, [font]);
 
-  // Apply font size to document
+  // Font size apply
   useEffect(() => {
-    const fontSizeMap = {
-      Small: "14px",
-      Medium: "16px",
-      Large: "18px",
+    const scaleMap = {
+      small: "0.875",
+      medium: "1",
+      large: "1.125",
+      xlarge: "1.25",
     };
-    document.documentElement.style.fontSize = fontSizeMap[fontSize];
+    const scale = scaleMap[fontSize] || "1";
+    document.documentElement.style.setProperty("--font-scale", scale);
+    document.documentElement.setAttribute("data-fontsize", fontSize);
   }, [fontSize]);
 
-  // Apply zoom to document
-  useEffect(() => {
-    document.body.style.zoom = `${zoom}%`;
-  }, [zoom]);
-
   const handleThemeChange = (e) => {
-    setTheme(e.target.value);
+    const val = e.target.value.toLowerCase();
+    dispatch(setUiTheme(val));
+    dispatch(setBoolTheme(val === "dark"));
   };
 
   const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
-    // In a real app, you would trigger i18n language change here
-    console.log("Language changed to:", e.target.value);
+    const code = e.target.value;
+    setLanguage(code);
+    i18n.changeLanguage(code);
   };
 
-  const handleFontChange = (e) => {
-    setFont(e.target.value);
-  };
+  const handleFontChange = (e) => dispatch(setFont(e.target.value));
 
   const handleFontSizeChange = (e) => {
-    setFontSize(e.target.value);
+    const map = {
+      Small: "small",
+      Medium: "medium",
+      Large: "large",
+      "Extra Large": "xlarge",
+    };
+    dispatch(setFontSize(map[e.target.value]));
   };
 
-  const handleZoomDecrease = () => {
-    if (zoom > 50) {
-      setZoom(zoom - 10);
-    }
-  };
+  const handleZoomDecrease = () =>
+    dispatch(setZoom(Math.max(50, zoom - 10)));
 
-  const handleZoomIncrease = () => {
-    if (zoom < 200) {
-      setZoom(zoom + 10);
-    }
-  };
+  const handleZoomIncrease = () =>
+    dispatch(setZoom(Math.min(200, zoom + 10)));
 
   const handleSyncCalendar = () => {
     setIsSyncingCalendar(true);
-    // Simulate sync process
     setTimeout(() => {
       setIsSyncingCalendar(false);
-      alert("Calendar synced successfully!");
+      alert(t("syncCalendar") + " ✓");
     }, 1500);
   };
 
   const handleSyncContact = () => {
     setIsSyncingContact(true);
-    // Simulate sync process
     setTimeout(() => {
       setIsSyncingContact(false);
-      alert("Contacts synced successfully!");
+      alert(t("syncContact") + " ✓");
     }, 1500);
   };
 
+  const currentLangLabel =
+    LANGUAGES.find((l) => l.code === language)?.label || "English";
+
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center bg-white dark:bg-[#0B0B0B] min-h-screen text-gray-900 dark:text-white">
       <div className="w-full max-w-[650px]">
-        {/* Display Section */}
+
+        {/* Display */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold text-black dark:text-white mb-5">
-            Display
+          <h2 className="text-xl font-semibold mb-5 text-gray-900 dark:text-white">
+            {t("Display")}
           </h2>
 
-          <SettingRow label="Theme" value={theme}>
+          <SettingRow label={t("theme")} value={theme}>
             <select
-              value={theme}
+              value={theme === "dark" ? "Dark" : "Light"}
               onChange={handleThemeChange}
-              className="w-full h-full px-4 py-3 rounded-xl border-0 bg-transparent
-              focus:outline-none cursor-pointer opacity-0 absolute inset-0 z-10
-              [&>option]:text-black [&>option]:bg-white dark:[&>option]:text-white dark:[&>option]:bg-gray-800"
+              className="bg-white dark:bg-[#0B0B0B] text-black dark:text-white border border-gray-300 dark:border-[#2A2A2A] px-3 py-1 rounded-md focus:outline-none"
             >
-              <option value="Light">Light</option>
-              <option value="Dark">Dark</option>
-              <option value="System">System</option>
+              <option value="Light">{t("light")}</option>
+              <option value="Dark">{t("dark")}</option>
             </select>
           </SettingRow>
         </div>
 
-        {/* General Section */}
+        {/* General */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold text-black dark:text-white mb-5">
-            General
+          <h2 className="text-xl font-semibold mb-5 text-gray-900 dark:text-white">
+            {t("general")}
           </h2>
 
           <div className="space-y-4">
-            <SettingRow label="language" value={language}>
+            <SettingRow label={t("language")} value={currentLangLabel}>
               <select
                 value={language}
                 onChange={handleLanguageChange}
-                className="w-full h-full px-4 py-3 rounded-xl border-0 bg-transparent
-                focus:outline-none cursor-pointer opacity-0 absolute inset-0 z-10
-                [&>option]:text-black [&>option]:bg-white dark:[&>option]:text-white dark:[&>option]:bg-gray-800"
+                className="bg-white dark:bg-[#0B0B0B] text-black dark:text-white border border-gray-300 dark:border-[#2A2A2A] px-3 py-1 rounded-md"
               >
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
-                <option value="Chinese">Chinese</option>
-                <option value="Japanese">Japanese</option>
-                <option value="Hindi">Hindi</option>
+                {LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
               </select>
             </SettingRow>
 
-            <SettingRow label="Font" value={font}>
+            <SettingRow label={t("font")} value={font}>
               <select
                 value={font}
                 onChange={handleFontChange}
-                className="w-full h-full px-4 py-3 rounded-xl border-0 bg-transparent
-                focus:outline-none cursor-pointer opacity-0 absolute inset-0 z-10
-                [&>option]:text-black [&>option]:bg-white dark:[&>option]:text-white dark:[&>option]:bg-gray-800"
+                className="bg-white dark:bg-[#0B0B0B] text-black dark:text-white border border-gray-300 dark:border-[#2A2A2A] px-3 py-1 rounded-md"
               >
                 <option value="Inter">Inter</option>
                 <option value="Roboto">Roboto</option>
                 <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="'Times New Roman'">Times New Roman</option>
-                <option value="Georgia">Georgia</option>
-                <option value="'Courier New'">Courier New</option>
               </select>
             </SettingRow>
 
-            <SettingRow label="Font size" value={fontSize}>
+            <SettingRow label={t("fontSize")} value={fontSize}>
               <select
                 value={fontSize}
                 onChange={handleFontSizeChange}
-                className="w-full h-full px-4 py-3 rounded-xl border-0 bg-transparent
-                focus:outline-none cursor-pointer opacity-0 absolute inset-0 z-10
-                [&>option]:text-black [&>option]:bg-white dark:[&>option]:text-white dark:[&>option]:bg-gray-800"
+                className="bg-white dark:bg-[#0B0B0B] text-black dark:text-white border border-gray-300 dark:border-[#2A2A2A] px-3 py-1 rounded-md"
               >
                 <option value="Small">Small</option>
                 <option value="Medium">Medium</option>
@@ -171,124 +173,52 @@ const Theme = () => {
               </select>
             </SettingRow>
 
-            <SettingRow label="page zoom" value={`${zoom}%`}>
-              <button
-                onClick={handleZoomDecrease}
-                disabled={zoom <= 50}
-                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white
-                text-lg transition disabled:opacity-30 disabled:cursor-not-allowed font-normal"
-              >
-                -
-              </button>
-
-              <span className="text-black dark:text-white font-normal text-[15px]">
-                {zoom}%
-              </span>
-
-              <button
-                onClick={handleZoomIncrease}
-                disabled={zoom >= 200}
-                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white
-                text-lg transition disabled:opacity-30 disabled:cursor-not-allowed font-normal"
-              >
-                +
-              </button>
+            {/* ✅ Improved zoom UI */}
+            <SettingRow label={t("pageZoom")} value="">
+              <div className="flex items-center gap-2">
+                <button onClick={handleZoomDecrease} className="px-2 border rounded">-</button>
+                <span>{zoom}%</span>
+                <button onClick={handleZoomIncrease} className="px-2 border rounded">+</button>
+              </div>
             </SettingRow>
           </div>
         </div>
 
-        {/* Syncing Option Section */}
+        {/* Sync */}
         <div>
-          <h2 className="text-xl font-semibold text-black dark:text-white mb-5">
-            Syncing option
+          <h2 className="text-xl font-semibold mb-5 text-gray-900 dark:text-white">
+            {t("syncingOption")}
           </h2>
 
-          <div className="space-y-4 mb-10">
-            <SyncButton 
-              label="Sync Calendar" 
-              onClick={handleSyncCalendar}
-              isSyncing={isSyncingCalendar}
-            />
-            <SyncButton 
-              label="Sync Contact" 
-              onClick={handleSyncContact}
-              isSyncing={isSyncingContact}
-            />
+          <div className="space-y-4">
+            <SyncButton label={t("syncCalendar")} onClick={handleSyncCalendar} isSyncing={isSyncingCalendar} />
+            <SyncButton label={t("syncContact")} onClick={handleSyncContact} isSyncing={isSyncingContact} />
           </div>
         </div>
+
       </div>
     </div>
   );
 };
 
-// Reusable Setting Row Component with proper layout
-const SettingRow = ({ label, value, children }) => {
-  // Check if children is a select element
-  const isSelect = children?.type === 'select';
-  
-  if (isSelect) {
-    // For select dropdowns, render the actual select with custom styling
-    return (
-      <div className="relative">
-        <div className="flex items-center justify-between w-full px-5 py-3 rounded-xl border border-gray-200 bg-[#F9FAFB]
-        dark:bg-[#1A1A1A] dark:border-gray-700 pointer-events-none">
-          <label className="text-[15px] text-black dark:text-white font-normal">
-            {label}
-          </label>
-          <div className="flex items-center gap-2">
-            <span className="text-[15px] text-black dark:text-white font-normal">
-              {value}
-            </span>
-            <svg 
-              className="w-3 h-3 text-gray-500 dark:text-gray-400" 
-              fill="currentColor" 
-              viewBox="0 0 20 20"
-            >
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </div>
-        </div>
-        {/* Overlay select that's actually clickable */}
-        <div className="absolute inset-0">
-          {children}
-        </div>
-      </div>
-    );
-  } else {
-    // For custom components like the zoom control, wrap in styled container
-    return (
-      <div className="flex items-center justify-between w-full px-5 py-3 rounded-xl border border-gray-200 bg-[#F9FAFB]
-      dark:bg-[#1A1A1A] dark:border-gray-700">
-        <label className="text-[15px] text-black dark:text-white font-normal">
-          {label}
-        </label>
-        <div className="flex items-center gap-4">
-          {children}
-        </div>
-      </div>
-    );
-  }
-};
+const SettingRow = ({ label, value, children }) => (
+  <div className="flex justify-between items-center p-3 border border-gray-300 dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#0B0B0B] text-gray-900 dark:text-white">
+    <span className="text-gray-800 dark:text-white">{label}</span>
+    <div className="flex gap-3 items-center">
+      {value && <span className="text-gray-600 dark:text-gray-300">{value}</span>}
+      {children}
+    </div>
+  </div>
+);
 
-// Sync Button Component with animation
 const SyncButton = ({ label, onClick, isSyncing }) => (
   <button
     onClick={onClick}
     disabled={isSyncing}
-    className="flex items-center justify-between w-full px-5 py-3 rounded-xl 
-    border border-gray-200 bg-[#F9FAFB] text-black
-    dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white
-    hover:bg-gray-100 dark:hover:bg-gray-900
-    focus:outline-none focus:border-[#2461E6] dark:focus:border-[#73FBFD]
-    transition disabled:opacity-50 disabled:cursor-not-allowed"
+    className="flex justify-between items-center w-full p-3 border border-gray-300 dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#0B0B0B] text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#111]"
   >
-    <span className="text-[15px] font-normal">{label}</span>
-    <RefreshCw 
-      size={18} 
-      className={`text-gray-500 dark:text-gray-400 transition-transform ${
-        isSyncing ? "animate-spin" : ""
-      }`} 
-    />
+    <span>{label}</span>
+    <RefreshCw className={isSyncing ? "animate-spin" : ""} />
   </button>
 );
 
