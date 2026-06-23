@@ -1,151 +1,130 @@
-# Syncaura Frontend - API & Auth Architecture Guide
+# Syncaura
+Collaborative workspace platform that integrates project management, real-time chat, video meetings, and attendance tracking into one seamless, multi-role dashboard.
 
-Hey team, Shivratna here. 
+Syncaura connects multi-role interfaces (Admin, Co-Admin, and User) with global Redux state management, client-side input validations, custom toast styling, and a secure JWT-based API connection with automated token refreshes.
 
-I have set up our frontend's core API integration, authentication service, and token management systems. This document serves as our master integration guide. Please read it thoroughly to understand how everything is structured, how data flows, and the best practices we need to follow while working on our tasks.
+## Features
+* **Multi-Role Workspaces**: Customized dashboards for Admins, Co-Admins, and Users.
+* **Project & Task Management**: Interactive project boards and checklist todo trackers.
+* **Real-Time Team Chat**: Threaded team chats designed for Socket.IO WebSockets.
+* **Video Meetings**: Virtual video/audio conference scheduler and call panel.
+* **Attendance & Leaves**: Log-in sheets and calendar leave request systems.
+* **Document Vault**: Shared space to upload, organize, and preview files.
+* **Notice Board**: Corporate bulletin board for publishing team notices.
+* **Complaints Portal**: Portal for submitting and tracking workspace complaints.
+* **Global Theme Engine**: Global dark/light mode toggle with theme memory.
+* **JWT Interceptor Queue**: Handles access token injection and auto-refresh retry queues.
+* **Styled Toast Alerts**: Visual error/success alerts styled using custom toast configs.
 
----
+## Tech Stack
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend Core** | React (v19), Vite |
+| **Styling & Theme** | Tailwind CSS, Lucide React, Framer Motion |
+| **State Management** | Redux Toolkit |
+| **Routing** | React Router Dom (v7) |
+| **Network Client** | Axios |
+| **Notifications** | React Toastify |
+| **Form Validation** | React Hook Form |
 
-## 1. Folder Structure & Service Layer
-
-Here is where our API communication and authentication logic lives:
-
-* `src/config/axios.js` -> Our network client. It contains an Axios instance with request and response interceptors to handle tokens automatically.
-* `src/redux/features/authThunks.js` -> Asynchronous Redux thunks for executing API requests (register, login, refresh, etc.).
-* `src/redux/slices/authSlice.js` -> The Redux slice storing state (user data, loading status, access token, and authentication flags).
-* `src/services/errorHandler.js` -> Centralized error processing and custom styled toast notification utility.
-* `src/constant/validationRules.js` -> Standard schemas for client-side input validations (name, email, password formats).
-* `src/pages/SignIn.jsx` & `src/pages/SignUp.jsx` -> Views handling login and registration forms.
-
----
-
-## 2. Authentication API Endpoints
-
-These are the backend authentication endpoints we communicate with (the base URL is configured in `src/config/axios.js` as `http://localhost:5000/api` for local development):
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Authenticate user credentials |
-| POST | `/api/auth/logout` | Log out the user and invalidate sessions |
-| POST | `/api/auth/refresh` | Refresh an expired access token |
-| GET | `/api/auth/me` | Fetch the current logged-in user profile |
-
----
-
-## 3. System Architecture Diagram
-
-This flowchart mapped below shows how our React client communicates with the backend APIs:
+## System Architecture
 
 ```
-[React Forms & UI Pages]
-      │
-      ▼  (Validates formats client-side first)
-[React Hook Form & validationRules.js]
-      │
-      ▼  (Dispatches async thunk action)
-[Redux Store & Slices]
-      │
-      ▼  (Request interceptor attaches accessToken)
-[Axios Client & config/axios.js]
-      │
-      ▼  (HTTP / WebSockets via Port 5000)
-[Express / Node Backend Server] ◄───► [Socket.IO Server]
-      │
-      ▼
-[MongoDB Database]
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SYNCAURA CLIENT LAYER                           │
+│                                                                        │
+│  ┌───────────────────────┐  Validate Inputs  ┌──────────────────────┐  │
+│  │   UI Components &     ├──────────────────>│   validationRules    │  │
+│  │  Pages (SignIn/Up/etc)│                   └──────────────────────┘  │
+│  └──────────┬────────────┘                                             │
+│             │                                                          │
+│             │ Dispatches Actions                                       │
+│             ▼                                                          │
+│  ┌───────────────────────┐  Selects State    ┌──────────────────────┐  │
+│  │     Redux Store       │<──────────────────┤    Slices (Auth,     │  │
+│  │ (Thunks & Operations) │                   │    Theme, Meet)      │  │
+│  └──────────┬────────────┘                   └──────────────────────┘  │
+│             │                                                          │
+│             │ HTTP Requests / WebSockets                               │
+│             ▼                                                          │
+│  ┌───────────────────────┐                   ┌──────────────────────┐  │
+│  │  Axios Client Wrapper │                   │  Local Storage       │  │
+│  │ (Request/Response)    │<─────────────────>│  (accessToken,       │  │
+│  │  Interceptors         │   Read/Write JWT  │   refreshToken)      │  │
+│  └──────────┬────────────┘                   └──────────────────────┘  │
+└─────────────┼──────────────────────────────────────────────────────────┘
+              │
+              │ HTTP / WebSockets (Port 5000)
+              ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SYNCAURA SERVER LAYER                           │
+│                                                                        │
+│  ┌───────────────────────┐                   ┌──────────────────────┐  │
+│  │  Express/Node Server  │<─────────────────>│   Socket.IO Server   │  │
+│  │  (REST Controllers)   │                   │ (Real-time events)   │  │
+│  └──────────┬────────────┘                   └──────────┬───────────┘  │
+│             │                                           │              │
+│             └───────────────────┬───────────────────────┘              │
+│                                 ▼                                      │
+│                      ┌──────────────────────┐                          │
+│                      │  MongoDB Database    │                          │
+│                      │ (User/Task Schemas)  │                          │
+│                      └──────────────────────┘                          │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
----
+## Processing Workflow
+1. **User Sign Up / Sign In**:
+   * User enters credentials in the forms.
+   * `validationRules` checks email structures, name requirements, and password length.
+   * On validation success, an `authThunk` triggers the Axios wrapper.
+2. **Authentication request**:
+   * Request interceptor retrieves `accessToken` from `localStorage` (if present) and appends it to headers.
+   * The backend validates credentials and returns a short-lived `accessToken` and a long-lived `refreshToken`.
+3. **Session Synchronization**:
+   * On response success, the thunk saves both tokens to `localStorage` and updates the global `authSlice` state.
+   * The user is automatically routed to their dashboard based on their account role (Admin, Co-Admin, or default user).
+4. **Session Token Refresh**:
+   * When an API call fails with `401 Unauthorized` (token expired), the Axios response interceptor pauses the request queue.
+   * It requests a new `accessToken` from `/auth/refresh` using the `refreshToken`.
+   * **On Success**: Restarts all queued requests with the new token.
+   * **On Failure**: Emits an `auth_session_expired` event, clears tokens, logs the user out, and redirects them to the Sign In screen.
 
-## 4. Authentication Flow & Token Management
+## Cost-Efficient Architecture
+* **Client-Side Validation**:catches format errors before hitting the network, saving server CPU cycles.
+* **Request Queuing Interceptor**: Pauses outgoing calls during token refresh to avoid duplicate refresh calls.
+* **Redux Selector Memoization**: Prevents unnecessary UI renders and keeps the app fast.
 
-We handle authentication using **JSON Web Tokens (JWT)**. The token lifecycle is split into two tokens for security:
-1. **Access Token**: Short-lived, stored in the Redux store state and mirrored in `localStorage` as `accessToken`.
-2. **Refresh Token**: Long-lived, stored in `localStorage` as `refreshToken`.
+## Running the Application
+1. Navigate to the project directory:
+   ```bash
+   cd Syncaura-frontend-1
+   ```
+2. Install the project dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the Vite local development server:
+   ```bash
+   npm run dev
+   ```
 
-### A. Automatic Token Attachment (Request Interceptor)
-You do not need to manually configure the Bearer Authorization header for every request. The Axios interceptor automatically reads the current access token from local storage and appends it to all outbound headers:
+## API Documentation
+The API client communicates with the backend server via endpoints. For documentation on how thunks, slices, interceptors, and error handlers are configured, check:
+* **[API_Architecture.md](file:///c:/Users/Shivratna/OneDrive/Desktop/Syncora%20Fr/Syncaura-frontend-1/API_Architecture.md)**
 
-```javascript
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-```
+## Roadmap
+- [ ] Connect the chat component with live WebSockets.
+- [ ] Add Jitsi Meet video frames in the meeting dashboard.
+- [ ] Integrate file upload logic in the document hub.
+- [ ] Optimize the views for mobile screens.
+- [ ] Add Progressive Web App (PWA) support for offline usage.
+- [ ] Write frontend unit tests.
 
-### B. Auto-Token Refresh (Response Interceptor)
-If an API request fails with a `401 Unauthorized` status (meaning the access token has expired):
-1. The Axios client intercepts the response and pauses the request queue.
-2. It sends a `POST` request to `/api/auth/refresh` using the `refreshToken`.
-3. If successful, it updates the stored `accessToken` and retries all paused requests in the queue.
-4. If refreshing fails (e.g. the refresh token has also expired), it triggers an `auth_session_expired` event, clears local storage, logs the user out, and redirects to the sign-in page.
+## Author
+**Shivratna Shinde**  
+Information Technology Student | Full-Stack Developer | Team Lead
 
----
-
-## 5. Request and Response Flow
-
-Here is the exact cycle of a transaction (e.g., submitting a signup or login form):
-
-1. **Submit**: User clicks submit. The form runs the checks inside `validationRules.js`.
-2. **Dispatch**: If checks pass, the page dispatches an async thunk (e.g. `loginUser(data)`).
-3. **Load**: Redux transitions state (`isLoading = true`) and triggers Axios.
-4. **Interceptors**: Axios client applies request interceptors to attach headers and performs the HTTP request.
-5. **Resolve/Reject**:
-   * **On Success**: Thunk handles the API response, saves tokens in LocalStorage, updates the auth slice state, and triggers a green success toast.
-   * **On Failure**: Axios catches the HTTP status error, which is caught by `errorHandler.js` to trigger a red alert toast showing the translated failure message.
-6. **Redirect**: The page navigates the user based on their specific account role (Admin, Co-Admin, User).
-
----
-
-## 6. Best Practices for the Development Team
-
-### A. Calling APIs from UI Pages
-Always dispatch Redux thunks using `.unwrap()` in your form handlers so that you can wrap them in local `try/catch` blocks:
-
-```javascript
-const onSubmit = async (data) => {
-  try {
-    const res = await dispatch(loginUser(data)).unwrap();
-    handleSuccess(`Welcome Back ${res?.user?.name || "User"}!`);
-    navigate("/user-dashboard");
-  } catch (err) {
-    handleError(err || "Login failed");
-  }
-};
-```
-
-### B. Managing Loading States
-To prevent double clicks and duplicate network requests, make sure you disable form buttons and show spinner status using the loading variables:
-
-```javascript
-const { isLoading } = useSelector((state) => state.auth);
-const { formState: { isSubmitting } } = useForm();
-
-const isPending = isSubmitting || isLoading;
-
-<button type="submit" disabled={isPending}>
-  {isPending ? "Loading..." : "Submit"}
-</button>
-```
-
-### C. Standardized Error Tooltips & Toasting
-Always route API errors and success alerts through our unified helpers in `errorHandler.js` rather than importing React-Toastify directly:
-
-```javascript
-import { handleError, handleSuccess } from "../services/errorHandler";
-
-// For errors:
-handleError(err);
-
-// For success:
-handleSuccess("Operation completed successfully!");
-```
-
-Let me know if you run into any questions or conflicts when integrating your features!
+* [LinkedIn](https://www.linkedin.com/in/shivratna-shinde-a0a208226/)
+* [GitHub](https://github.com/Shivratna-27)
+* [Portfolio](https://shivratnashinde.com/)
