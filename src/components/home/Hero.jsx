@@ -63,7 +63,8 @@ const Hero = () => {
                 src={heroTeam}
                 alt="Team collaboration illustration"
                 className="w-full h-auto"
-                loading="lazy"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
           </div>
