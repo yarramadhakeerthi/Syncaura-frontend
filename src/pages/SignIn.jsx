@@ -98,6 +98,12 @@ const SignIn = () => {
       onClick: () => console.log("Facebook Login"),
     },
   ];
+<<<<<<< HEAD
+=======
+  const [isSubmitting, setIsSubmitting]=useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const navigate=useNavigate();
+>>>>>>> 56e5fd0 (Google Login Button)
 
   const handleFocus = (ref) => {
     ref.current?.classList.add(
@@ -151,6 +157,19 @@ const SignIn = () => {
  
      console.log(errors);
    };
+   const handleGoogleLogin = () => {
+  alert("Google button clicked");
+
+  console.log("Google OAuth route triggered");
+
+  setGoogleLoading(true);
+
+  setTimeout(() => {
+    setGoogleLoading(false);
+  }, 2000);
+  // Backend URL milne ke baad sirf ye line change hogi.
+  // window.location.href = "http://localhost:5000/api/auth/google";
+};
  
  return (
   <div className="w-full h-screen bg-black flex items-center justify-center">
@@ -262,6 +281,7 @@ export default function Login() {
           </div>
 
 <div className="flex justify-center gap-4 mb-4">
+<<<<<<< HEAD
   <button type="button" onClick={handleGoogleLogin} className="border p-2 rounded-md hover:shadow">
     <FcGoogle size={20} />
   </button>
@@ -271,6 +291,21 @@ export default function Login() {
   <button className="border p-2 rounded-md hover:shadow">
     <FaFacebook size={20} className="text-blue-600" />
   </button>
+=======
+  {socialProviders.map((provider) => (
+  <SocialAuthButton
+    key={provider.id}
+    icon={provider.icon}
+    alt={provider.alt}
+    loading={provider.id === "google" ? googleLoading : false}
+    onClick={
+      provider.id === "google"
+        ? handleGoogleLogin
+        : provider.onClick
+    }
+  />
+))}
+>>>>>>> 56e5fd0 (Add Google Login button UI)
 </div>
 
           <p style={styles.switchText}>
