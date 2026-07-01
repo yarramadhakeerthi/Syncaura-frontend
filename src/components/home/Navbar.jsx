@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useDarkMode } from "../../hooks/useDarkMode";
 
 const Navbar = () => {
@@ -128,7 +129,7 @@ const Navbar = () => {
             }}
           >
             Start Free
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -149,7 +150,7 @@ const Navbar = () => {
             }}
           >
             Start Free
-          </button>
+          </Link>
         </div>
 
         {/* Navigation Links Container - Centered with Border */}
