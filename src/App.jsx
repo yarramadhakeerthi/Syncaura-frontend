@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./redux/store";
 import MainLayout from "./layouts/MainLayout";
-import { useEffect, lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 const Projects = lazy(() => import("./pages/Projects"));
 const Tasks = lazy(() => import("./pages/Tasks"));
@@ -19,8 +19,9 @@ const AttendanceLeave = lazy(() => import("./pages/AttendanceLeave"));
 const Notice = lazy(() => import("./pages/Notice"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Admin = lazy(() => import("./pages/Admin"));
-const Home = lazy(() => import("./pages/Home"));
 const CoAdmin = lazy(() => import("./pages/CoAdmin"));
+const Home = lazy(() => import("./pages/Home"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 
 import Header from "./components/Meeting/Header/Header";
 import MobileSidebar from "./components/MobileSidebar";
@@ -29,10 +30,8 @@ import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { refreshAccessToken } from "./redux/features/authThunks";
 import { logout } from "./redux/slices/authSlice";
-
 import { Loader } from "lucide-react";
 import ProtectRoute from "./RouteProtection/ProtectRoute";
-
 
 export default function App() {
   const dispatch = useDispatch();
@@ -94,21 +93,17 @@ export default function App() {
       />
 
       <BrowserRouter>
-        <Suspense
-          fallback={
-            <div
-              className="w-full h-screen flex items-center justify-center"
-              data-theme={isDark ? "dark" : "light"}
-            >
-              <Loader className="size-5 lg:size-13 page-2xl:size-15 text-blue-600 dark:text-[#73FBFD] animate-spin duration-200" />
-            </div>
-          }
-        >
+        <Suspense fallback={
+          <div className="w-full h-screen bg-white dark:bg-black flex items-center justify-center">
+            <Loader className="size-8 text-blue-600 dark:text-[#73FBFD] animate-spin duration-200" />
+          </div>
+        }>
           <Routes>
             <Route element={<ProtectRoute publicOnly />}>
               <Route path="/" element={<Home />} />
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
             </Route>
 
             <Route
