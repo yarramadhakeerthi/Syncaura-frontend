@@ -198,7 +198,8 @@
 @layer components {
   .btn-hover {
     @apply relative overflow-hidden cursor-pointer;
-
+    will-change: transform, filter;
+    
     transition:
       transform 250ms cubic-bezier(.22, 1, .36, 1),
       filter 250ms ease,
