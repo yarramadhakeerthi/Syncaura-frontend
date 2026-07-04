@@ -77,7 +77,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
         className="flex items-center gap-3 cursor-pointer"
       >
         {/* Back button (mobile only) */}
-        <button onClick={handleBackClick} className="md:hidden">
+        <button onClick={handleBackClick} className="md:hidden btn-hover">
           <ArrowLeft size={20} className="text-black dark:text-gray-300" />
         </button>
 
@@ -107,7 +107,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
             <div className="absolute right-0 top-10 w-56 bg-white dark:bg-[#2E2F2F] border border-[#E0DDDD] dark:border-[#575757] rounded-lg shadow-lg py-2 z-50">
               <button
                 onClick={() => handleMenuAction("viewProfile")}
-                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3 btn-hover"
               >
                 <span className="size-5 flex items-center justify-center">
                   👤
@@ -117,7 +117,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
 
               <button
                 onClick={() => handleMenuAction("muteNotifications")}
-                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3 btn-hover"
               >
                 <span className="size-5 flex items-center justify-center">
                   🔕
@@ -127,7 +127,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
 
               <button
                 onClick={() => handleMenuAction("clearChat")}
-                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white text-base flex items-center gap-3 btn-hover"
               >
                 <span className="size-5 flex items-center justify-center">
                   🗑️
@@ -137,7 +137,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
 
               <button
                 onClick={() => handleMenuAction("deleteChat")}
-                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-base flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-base flex items-center gap-3 btn-hover"
               >
                 <span className="size-5 flex items-center justify-center">
                   ❌
@@ -149,7 +149,7 @@ export default function ChatHeader({ chat, onBack, setOpen }) {
 
               <button
                 onClick={() => handleMenuAction("blockUser")}
-                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-base flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-base flex items-center gap-3 btn-hover"
               >
                 <span className="size-5 flex items-center justify-center">
                   🚫

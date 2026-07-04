@@ -84,77 +84,70 @@ export default function MobileSidebar({ open, setOpen }) {
     ${open ? "translate-x-0" : "-translate-x-full"}
     lg:translate-x-0
   `}
-      >
-        <div className="flex lg:hidden items-center justify-between px-4 py-4">
-          <button
-            onClick={() => setOpen(false)}
-            className="transition-transform duration-300 hover:rotate-90"
-          >
-            <X size={20} className="text-[#000000] dark:text-[#F8F8F8]" />
-          </button>
-        </div>
-        <div className="lg:flex hidden items-center justify-between px-4 py-4">
-          <Menu size={30} className="text-[#000000] dark:text-[#F8F8F8]" />
-        </div>
+            >
+                <div className="flex lg:hidden items-center justify-between px-4 py-4">
+                    <button className="btn-hover" onClick={() => setOpen(false)}>
+                        <X size={20} className="text-[#000000] dark:text-[#F8F8F8]" />
+                    </button>
+                </div>
+                <div className="lg:flex hidden items-center justify-between px-4 py-4">
+                    <Menu size={30} className="text-[#000000] dark:text-[#F8F8F8]" />
 
-        <nav className="px-1 space-y-1 flex-1 overflow-y-auto">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.label}
-                to={item.path}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `group flex items-center justify-between px-3 py-2 rounded-lg text-xl cursor-pointer
-                            text-black dark:text-[#F8F8F8]
-                            transition-all duration-300 hover:translate-x-2
-                            ${
-                              isActive
-                                ? "bg-[#2457C529] dark:bg-[#73FBFD]/10 font-medium"
-                                : "hover:bg-gray-100 dark:hover:bg-[#575757]"
-                            }`
-                }
-              >
-                <div className="flex items-center gap-3">
-                  <Icon
-                    size={20}
-                    className="transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <span className="text-lg">{item.label}</span>
                 </div>
 
-                {/* Notification Badge */}
-                {item.count > 0 && (
-                  <span
-                    className="
-                                size-5
-                                flex items-center justify-center
-                                rounded-full text-xs font-semibold
-                                bg-[#5361EB] text-white dark:text-[#000000]
-                                dark:bg-[#73FBFD]
-                            "
-                  >
-                    {item.count}
-                  </span>
-                )}
-              </NavLink>
-            );
-          })}
-        </nav>
+                <nav className="px-1 space-y-1 flex-1 overflow-y-auto">
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                            <NavLink
+                                key={item.label}
+                                to={item.path}
+                                onClick={() => setOpen(false)}
+                                className={({ isActive }) =>
+                                    `flex items-center justify-between px-3 py-2 rounded-lg text-xl cursor-pointer
+     text-black dark:text-[#F8F8F8]
+     transition-colors
+     ${isActive
+                                        ? "bg-[#2457C529] dark:bg-[#73FBFD]/10 font-medium"
+                                        : "hover:bg-gray-100 dark:hover:bg-[#575757]"
+                                    }`
+                                }
+                            >
 
-        <div className="flex flex-col gap-5 px-4 py-4">
-          <div className="h-px w-full bg-[#E0DDDD] dark:bg-[#575757]" />
+                                <div className="flex items-center gap-3">
+                                    <Icon size={20} />
+                                    <span className="text-lg">{item.label}</span>
+                                </div>
 
-          <button
-            onClick={() => logOutHandle()}
-            className="flex cursor-pointer items-center justify-center gap-5 w-full transition-all duration-300 hover:scale-105"
-          >
-            <LogOut className="size-6 text-[#FF0000]" />
-            <h2 className="text-[#FF0000] text-xl font-semibold">Log Out</h2>
-          </button>
-        </div>
-      </aside>
-    </>
-  );
+                                {/* Notification Badge */}
+                                {item.count > 0 && (
+                                    <span
+                                        className="
+      size-5
+      flex items-center justify-center
+      rounded-full text-xs font-semibold
+      bg-[#5361EB] text-white dark:text-[#000000]
+      dark:bg-[#73FBFD]
+    "
+                                    >
+                                        {item.count}
+                                    </span>
+                                )}
+
+                            </NavLink>
+                        );
+                    })}
+                </nav>
+
+                <div className="flex flex-col gap-5 px-4 py-4">
+                    <div className="h-px w-full bg-[#E0DDDD] dark:bg-[#575757]" />
+                    <button onClick={() => logOutHandle()} className="flex cursor-pointer items-center justify-center gap-5 w-full btn-hover">
+                        <LogOut className="size-6 text-[#FF0000]" />
+                        <h2 className="text-[#FF0000] text-xl font-semibold" >Log Out</h2>
+
+                    </button>
+                </div>
+            </aside>
+        </>
+    );
 }

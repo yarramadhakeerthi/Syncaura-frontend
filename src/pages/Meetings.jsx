@@ -112,7 +112,10 @@ export default function Meetings() {
             {/* Mobile Header */}
             <div className="flex lg:hidden items-center justify-between">
               <div className="flex items-center gap-3">
-                <button onClick={() => setSidebarOpen(true)} className="p-1">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="p-1 btn-hover"
+                >
                   <FaBars className="text-2xl text-black dark:text-white" />
                 </button>
 
@@ -121,22 +124,12 @@ export default function Meetings() {
                 </h1>
               </div>
               <button
-                className="
-    flex items-center gap-2
-    bg-white dark:bg-[#2a2a2a]
-    px-4 py-2
-    rounded-2xl
-    shadow-sm
-    border border-[#e5e7eb]
-    dark:border-[#3a3a3a]
-    text-[#111827]
-    dark:text-white
-  "
-              >
-                <RefreshCcw
-                  size={16}
-                  className="text-[#111827] dark:text-white"
-                />
+  className="flex items-center gap-2 bg-white dark:bg-[#2a2a2a] px-4 py-2 rounded-2xl shadow-sm border border-[#e5e7eb] dark:border-[#3a3a3a] text-[#111827] dark:text-white btn-hover"
+>
+  <RefreshCcw
+    size={16}
+    className="text-[#111827] dark:text-white"
+  />
 
                 <span className="text-sm font-medium">Sync Calendar</span>
               </button>
@@ -153,24 +146,12 @@ export default function Meetings() {
                 </p>
               </div>
               <button
-                className="
-  flex items-center gap-2
-  bg-white dark:bg-[#2a2a2a]
-  px-3.5 py-1.5
-  rounded-full
-  border border-[#f1f1f1]
-  dark:border-[#2f2f2f]
-  shadow-[0_2px_8px_rgba(0,0,0,0.04)]
-  hover:shadow-[0_3px_10px_rgba(0,0,0,0.06)]
-  transition
-  text-[#4b5563]
-  dark:text-white
-"
-              >
-                <RefreshCcw
-                  size={14}
-                  className="text-[#111827] dark:text-white"
-                />
+  className="flex items-center gap-2 bg-white dark:bg-[#2a2a2a] px-3.5 py-1.5 rounded-full border border-[#f1f1f1] dark:border-[#2f2f2f] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition text-[#4b5563] dark:text-white btn-hover"
+>
+  <RefreshCcw
+    size={14}
+    className="text-[#111827] dark:text-white"
+  />
 
                 <span className="text-[13px] font-medium">Sync Calendar</span>
               </button>
@@ -191,23 +172,13 @@ export default function Meetings() {
 
               {/* Right Controls */}
               <div className="flex flex-col sm:flex-row gap-2">
-                <button
-                  className="
-    flex items-center justify-center
-    gap-1.5
-    bg-white dark:bg-[#2a2a2a]
-    border border-[#f1f1f1]
-    dark:border-[#2f2f2f]
-    px-3 py-1.5
-    rounded-full
-    shadow-[0_2px_8px_rgba(0,0,0,0.04)]
-    text-[#4b5563]
-    dark:text-[#d1d5db]
-  "
-                >
-                  {" "}
-                  <Funnel size={14} />
-                  <span className="text-[13px]">Filter</span>
+  
+              <button
+  className="flex items-center justify-center gap-1.5 bg-white dark:bg-[#2a2a2a] border border-[#f1f1f1] dark:border-[#2f2f2f] px-3 py-1.5 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[#4b5563] dark:text-[#d1d5db] btn-hover"
+>   <Funnel size={14} />
+                  <span className="text-[13px]">
+                    Filter
+                  </span>
                 </button>
 
                 <div

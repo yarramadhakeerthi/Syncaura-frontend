@@ -67,9 +67,8 @@ const ControllBar = ({
         <div className="flex items-center gap-3 relative">
           {/* MIC */}
           <button
-            onClick={toggleMic}
-            className={`w-15 h-11 rounded-full flex items-center justify-center transition
-            ${
+            onClick={()=>{toggleMic() ; console.log("mic clicked")}}
+            className={`btn-hover w-15 h-11 rounded-full flex items-center justify-center transition ${
               !isMicOn
                 ? "bg-red-200 text-red-600"
                 : isDarkTheme
@@ -82,9 +81,9 @@ const ControllBar = ({
 
           {/* CAMERA */}
           <button
-            onClick={toggleCamera}
-            className={`w-15 h-11 rounded-full flex items-center justify-center transition
-            ${
+            onClick={()=>{toggleCamera(); console.log("camera clicked")
+            }}
+            className={`btn-hover w-15 h-11 rounded-full flex items-center justify-center transition ${
               !isCameraOn
                 ? "bg-red-200 text-red-600"
                 : isDarkTheme
@@ -112,8 +111,7 @@ const ControllBar = ({
                 }
               }
             }}
-            className={`w-15 h-11 rounded-full flex items-center justify-center transition
-            ${
+            className={`btn-hover w-15 h-11 rounded-full flex items-center justify-center transition ${
               isScreenSharing
                 ? "bg-red-200 text-red-600"
                 : isDarkTheme
@@ -127,7 +125,7 @@ const ControllBar = ({
           {/* EMOJI */}
           <button
             onClick={() => setShowEmojiPicker((prev) => !prev)}
-            className={`w-15 h-11 rounded-full ${
+            className={`btn-hover w-15 h-11 rounded-full ${
               isDarkTheme
                 ? "bg-[#2E2F2F] text-[#FFFFFF]"
                 : "bg-[#F8F8F8] text-[#000000]"
@@ -138,7 +136,7 @@ const ControllBar = ({
 
           {/* CC */}
           <button
-            className={`w-15 h-11 rounded-full ${
+            className={`btn-hover w-15 h-11 rounded-full ${
               isDarkTheme
                 ? "bg-[#2E2F2F] text-[#FFFFFF]"
                 : "bg-[#F8F8F8] text-[#000000]"
@@ -154,8 +152,7 @@ const ControllBar = ({
                 prev.includes(1) ? prev.filter((id) => id !== 1) : [...prev, 1],
               )
             }
-            className={`w-15 h-11 rounded-full flex items-center justify-center
-            ${
+            className={`btn-hover w-15 h-11 rounded-full flex items-center justify-center ${
               raisedHands.includes(1)
                 ? "bg-blue-500 text-white"
                 : isDarkTheme
@@ -167,7 +164,7 @@ const ControllBar = ({
           </button>
 
           {/* END CALL */}
-          <button className="px-6 h-11 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center">
+          <button className="px-6 h-11 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center btn-hover">
             <PhoneOff size={20} />
           </button>
 
@@ -207,7 +204,7 @@ const ControllBar = ({
                       sendEmojiReaction(emoji);
                       setShowEmojiPicker(false);
                     }}
-                    className="text-2xl hover:scale-125 transition"
+                    className="text-2xl hover:scale-125 transition btn-hover"
                   >
                     {emoji}
                   </button>
@@ -220,7 +217,7 @@ const ControllBar = ({
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-2 lg:gap-2 xl:gap-6">
           <button
-            className={`${activePanel === "detail" && "bg-[#989696]"} p-2 rounded-full`}
+            className={`btn-hover ${activePanel === "detail" && "bg-[#989696]"} p-2 rounded-full`}
             onClick={() => setActivePanel("detail")}
           >
             <CircleAlert
@@ -229,7 +226,7 @@ const ControllBar = ({
           </button>
 
           <button
-            className={`${activePanel === "people" && "bg-[#989696]"} p-2 rounded-full relative`}
+            className={`btn-hover ${activePanel === "people" && "bg-[#989696]"} p-2 rounded-full relative`}
             onClick={() => setActivePanel("people")}
           >
             <div
@@ -247,7 +244,7 @@ const ControllBar = ({
           </button>
 
           <button
-            className={`${activePanel === "chat" && "bg-[#989696]"} p-2 rounded-full`}
+            className={`btn-hover ${activePanel === "chat" && "bg-[#989696]"} p-2 rounded-full`}
             onClick={() => setActivePanel("chat")}
           >
             <MessageSquareText
@@ -255,65 +252,78 @@ const ControllBar = ({
             />
           </button>
 
-          <button>
+          <button className="btn-hover">
             <UserLock className={`${isDarkTheme ? "" : "text-black"}`} />
           </button>
         </div>
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="flex md:hidden items-center justify-center gap-2 sm:gap-4 py-3 relative">
-        {/* MIC */}
-        <button
-          onClick={toggleMic}
-          className={`w-16 h-12 rounded-full flex items-center justify-center
-      ${
+       <div className="flex md:hidden items-center justify-center gap-2 sm:gap-4 py-3 relative">
+          {/* MIC */}
+          <button
+            onClick={toggleMic}
+            className={`btn-hover w-16 h-12 rounded-full flex items-center justify-center ${
         !isMicOn
           ? "bg-[#FFCACA] text-[#952B2B]"
           : isDarkTheme
             ? "bg-[#2E2F2F] text-[#FFFFFF]"
-            : " bg-[#F8F8F8]  text-[#000000] "
-      }
-      }`}
-        >
-          {isMicOn ? <Mic size={22} /> : <MicOff size={22} />}
-        </button>
+            : "bg-[#F8F8F8] text-[#000000]"
+      }}`}
+          >
+            {isMicOn ? <Mic size={22} /> : <MicOff size={22} />}
+          </button>
 
-        {/* CAMERA */}
-        <button
-          onClick={toggleCamera}
-          className={`w-16 h-12 rounded-full flex items-center justify-center
-      ${
+          {/* CAMERA */}
+          <button
+            onClick={toggleCamera}
+            className={`btn-hover w-16 h-12 rounded-full flex items-center justify-center ${
         !isCameraOn
           ? "bg-[#FFCACA] text-[#952B2B]"
           : isDarkTheme
             ? "bg-[#2E2F2F] text-[#FFFFFF]"
-            : " bg-[#F8F8F8]  text-[#000000] "
-      }
-      }`}
-        >
-          {isCameraOn ? <Video size={22} /> : <VideoOff size={22} />}
-        </button>
+            : "bg-[#F8F8F8] text-[#000000]"
+      }}`}
+          >
+            {isCameraOn ? <Video size={22} /> : <VideoOff size={22} />}
+          </button>
 
-        {/* SMILE */}
-        <button
-          onClick={() => setShowEmojiPicker((prev) => !prev)}
-          className={`w-16 h-12 rounded-full  ${isDarkTheme ? "bg-[#2E2F2F] text-[#FFFFFF]" : " bg-[#F8F8F8]  text-[#000000] "} flex items-center justify-center`}
-        >
-          <Smile size={22} />
-        </button>
-        {/* MORE */}
-        <button
-          className={`w-15 h-11 rounded-full  ${isDarkTheme ? "bg-[#2E2F2F] text-[#FFFFFF]" : " bg-[#F8F8F8]  text-[#000000] "} flex items-center justify-center`}
-        >
-          <MoreVertical size={20} />
-        </button>
+          {/* SMILE */}
+          <button
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            className={`btn-hover w-16 h-12 rounded-full ${isDarkTheme ? "bg-[#2E2F2F] text-[#FFFFFF]" : "bg-[#F8F8F8] text-[#000000]"} flex items-center justify-center`}
+          >
+            <Smile size={22} />
+          </button>
+          {/* MORE */}
+          <button
+            className={`btn-hover w-15 h-11 rounded-full ${isDarkTheme ? "bg-[#2E2F2F] text-[#FFFFFF]" : "bg-[#F8F8F8] text-[#000000]"} flex items-center justify-center`}
+          >
+            <MoreVertical size={20} />
+          </button>
 
-        {/* END CALL */}
-        <button className="w-16 h-12 rounded-full bg-red-500 flex items-center justify-center">
-          <PhoneOff size={22} />
-        </button>
-        <div className="pointer-events-none absolute inset-0 flex justify-center items-end z-40">
+          {/* END CALL */}
+          <button className="w-16 h-12 rounded-full bg-red-500 flex items-center justify-center btn-hover">
+            <PhoneOff size={22} />
+          </button>
+          <div className="pointer-events-none absolute inset-0 flex justify-center items-end z-40">
+            <AnimatePresence>
+              {Object.entries(emojiReactions).map(([id, emoji]) => (
+                <motion.div
+                  key={id}
+                  initial={{ y: 0, opacity: 0, scale: 0.8 }}
+                  animate={{ y: -250, opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.8, ease: "easeOut" }}
+                  className="absolute text-5xl mb-24"
+                >
+                  {emoji}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* EMOJI PICKER MOBILE */}
           <AnimatePresence>
             {Object.entries(emojiReactions).map(([id, emoji]) => (
               <motion.div
@@ -324,7 +334,18 @@ const ControllBar = ({
                 transition={{ duration: 1.8, ease: "easeOut" }}
                 className="absolute text-5xl mb-24"
               >
-                {emoji}
+                {emojiList.map((emoji) => (
+                  <button
+                    key={emoji}
+                    onClick={() => {
+                      sendEmojiReaction(emoji);
+                      setShowEmojiPicker(false);
+                    }}
+                    className="text-2xl hover:scale-125 transition btn-hover"
+                  >
+                    {emoji}
+                  </button>
+                ))}
               </motion.div>
             ))}
           </AnimatePresence>
