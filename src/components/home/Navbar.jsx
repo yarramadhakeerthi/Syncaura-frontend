@@ -135,27 +135,43 @@ const Navbar = () => {
       {/* Mobile - EXACT Figma Design */}
       <div className="md:hidden">
         {/* Top Row: Logo + Start Free Button */}
-        <div className="flex items-center justify-between px-6 py-5">
-          <div className="text-[23px] font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-            FLOWBIT
-          </div>
-          
-          <button
-            onClick={() => navigate('/sign-up')}
-            className="px-4 py-1 text-s font-medium rounded-[10px]"
-            style={{
-              backgroundColor: "var(--accent-color)",
-              color: "var(--bg-primary)",
-            }}
-          >
-            Start Free
-          </button>
-        </div>
+        {/* Top Row */}
+<div className="flex items-center justify-between px-4 py-5">
+  <div
+    className="text-[23px] font-bold tracking-tight"
+    style={{ color: "var(--text-primary)" }}
+  >
+    FLOWBIT
+  </div>
+
+  <div className="flex items-center gap-3">
+
+    <button
+      onClick={() => navigate("/sign-in")}
+      className="text-sm font-medium"
+      style={{ color: "var(--accent-color)" }}
+    >
+      Login
+    </button>
+
+    <button
+      onClick={() => navigate("/sign-up")}
+      className="px-4 py-2 text-sm font-medium rounded-[10px]"
+      style={{
+        backgroundColor: "var(--accent-color)",
+        color: "var(--bg-primary)",
+      }}
+    >
+      Start Free
+    </button>
+
+  </div>
+</div>
 
         {/* Navigation Links Container - Centered with Border */}
         <div className="flex justify-center px-4 py-5 pb-3">
           <nav 
-            className="inline-flex items-center gap-5 px-6 py-2.5 rounded-[15px] border overflow-x-auto"
+             className="inline-flex items-center gap-5 px-6 py-2.5 rounded-[15px] border overflow-x-auto no-scrollbar"
             style={{ 
               borderColor: 'var(--border-color)',
               backgroundColor: 'var(--bg-primary)'

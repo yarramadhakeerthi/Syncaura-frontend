@@ -153,13 +153,13 @@ const SignIn = () => {
    };
  
  return (
-  <div className="w-full h-screen bg-black flex items-center justify-center">
+  <div className="min-h-screen bg-black flex items-center justify-center">
 
     {/* MAIN WHITE CONTAINER */}
-    <div className="w-[95%] h-[90%] bg-white dark:bg-[#0F172A] rounded-3xl flex overflow-hidden relative">
+    <div className="w-[95%] min-h-[90vh] bg-white dark:bg-[#0F172A] rounded-3xl flex overflow-hidden relative">
 
       {/* LEFT SIDE */}
-      <div className="w-[45%] bg-[#1E4D7B] relative flex items-center justify-center">
+      <div className="hidden lg:flex w-[45%] bg-[#1E4D7B] relative flex items-center justify-center">
 
         {/* CURVE */}
         <div className="absolute right-0 top-0 w-[70%] h-full bg-white dark:bg-[#0F172A] rounded-l-[100px]"></div>
@@ -168,14 +168,14 @@ const SignIn = () => {
         <img
   src="/images/Auth/loginHuman.png"
   alt="login"
-  className="w-[420px] lg:w-[500px] z-10 scale-x-[-1]"
+  className="w-72 lg:w-[500px] max-w-full z-10 scale-x-[-1]"
 />
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="w-full flex flex-col items-center max-w-md space-y-5">
+      <div className="w-full flex flex-col items-center px-6 sm:px-8 space-y-5">
 
-        <div className="w-[380px] space-y-6 mt-4">
+        <div className="w-full max-w-[380px] px-2 sm:px-0 space-y-6 mt-4">
 
           <h1 className="text-2xl font-semibold text-center text-gray-800 dark:text-white">
             Welcome Back
@@ -187,17 +187,18 @@ const SignIn = () => {
             <input
   type="email"
   placeholder="Email Address"
-  className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none"
+  className="w-full border border-gray-300  pl-12 px-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none"
 />
           </div>
 
           {/* PASSWORD */}
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🔒</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🔒 
+            </span>
             <input
-  type="password"
-  placeholder="Password"
-  className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          type="password"
+           placeholder="Password"
+           className="w-full border border-gray-300 pl-12 pr-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
 />
           </div>
 
@@ -227,9 +228,15 @@ const SignIn = () => {
   </button>
 </div>
 
-          <p className="text-center text-sm text-gray-500">
-            Don’t have an account? <span className="text-blue-500">Sign Up</span>
-          </p>
+        <p className="text-center text-sm text-gray-500">
+  Don’t have an account?{" "}
+  <Link
+    to="/sign-up"
+    className="text-blue-500 hover:underline font-medium"
+  >
+    Sign Up
+  </Link>
+</p>
 
         </div>
       </div>
